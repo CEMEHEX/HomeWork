@@ -20,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		if ((s[i] >= '0') && (s[i] <= '9'))
 		{
 			output += s[i];
-			if ((i == s.length() - 2) || ((s[i + 1] < '0') || (s[i + 1] > '9'))) output += ' ';
+			if ((i == s.length() - 1) || ((s[i + 1] < '0') || (s[i + 1] > '9'))) output += ' ';
 			continue;
 		}
 		if (s[i] == '(')
