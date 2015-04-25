@@ -2,20 +2,64 @@
 #include <stack>
 #include <string>
 using namespace std;
+bool isOperation(char c) {
+	return (c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '%');
+}
+
+bool isValid(char c) {
+	return ((c >= '0') && (c <= '9')) || (c == '(') || (c == ')') || isOperation(c);
+}
+
 int prio(char c) {
 	if ((c == '*') || (c == '/') || (c == '%')) return 3;
 	if ((c == '+') || (c == '-')) return 2;
 	else return 1;
 }
-int _tmain(int argc, _TCHAR* argv[])
+
+void error(string s) {
+	cout <<"Error:" + s;
+	exit(0);
+}
+
+int main(int argc, char* argv[])
 {
-	string s;
+	string expression;
 	string output;
-	cin >> s;
+	getline(cin, expression);
 	stack <char> stack1;
 	stack <int> stack2;
-	for (int i = 0; i < s.length();++i)
+	string s;
+	bool isEmpty = true;
+	for (int i = 0; i < expression.length(); ++i) {
+		if (isOperation(expression[i]) || ((expression[i] >= '0') && (expression[i] <= '9'))) {
+			isEmpty = false;
+		}
+		if (expression[i] != ' ') {
+			s += expression[i];
+		}
+	}
+	if (isEmpty) {
+		error("Empty expression");
+	}
+	int balance = 0;
+	for (int i = 0; i < s.length(); ++i)
 	{
+		if (s[i] == '(') {
+			balance++;
+		}
+		if (s[i] == ')') {
+			balance--;
+		}
+		if (balance < 0) {
+			error("No opening parenthesis");
+		}
+		if ((isOperation(s[i])) && (((i < s.length() - 1) && (isOperation(s[i + 1]))) || (i == s.length() - 1) || (i == 0))) {
+			error("No argument");
+		}
+		if (!isValid(s[i])) {
+			error("Invalid symbol in expression");
+		}
+
 		if ((s[i] >= '0') && (s[i] <= '9'))
 		{
 			output += s[i];
@@ -29,7 +73,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		if (s[i] == ')')
 		{
-			while (stack1.top() != '(') 
+			while (stack1.top() != '(')
 			{
 				output += stack1.top();
 				stack1.pop();
@@ -39,20 +83,26 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		if ((stack1.empty()) || (prio(stack1.top()) < prio(s[i]))) stack1.push(s[i]);
 		else {
-		while ((!stack1.empty()) &&(prio(stack1.top()) >= prio(s[i])))
-		{
-			output += stack1.top();
-			stack1.pop();
-		}
+			while ((!stack1.empty()) && (prio(stack1.top()) >= prio(s[i])))
+			{
+				output += stack1.top();
+				stack1.pop();
+			}
 		}
 		if ((stack1.empty()) || (prio(stack1.top()) < prio(s[i]))) stack1.push(s[i]);
 	}
-	while(!stack1.empty())
+	if (balance < 0) {
+		error("No opening parenthesis");
+	}
+	if (balance > 0) {
+		error("No closing parenthesis");
+	}
+	while (!stack1.empty())
 	{
 		output += stack1.top();
 		stack1.pop();
 	}
-	cout<<output<<endl;
+	cout << output << endl;
 	string num;
 	for (int i = 0; i < output.length(); ++i){
 		if ((int)output[i] == 32){
@@ -68,14 +118,15 @@ int _tmain(int argc, _TCHAR* argv[])
 			stack2.pop();
 			switch (output[i])
 			{
-			    case '+':stack2.push(a + b);break;
-			    case '-':stack2.push(a - b);break;
-			    case '*':stack2.push(a * b);break;
-			    case '/':stack2.push(a / b);break;
-				case '%':stack2.push(a % b);break;
+			case '+':stack2.push(a + b); break;
+			case '-':stack2.push(a - b); break;
+			case '*':stack2.push(a * b); break;
+			case '/': if (b == 0) error("Division by zero"); 
+				stack2.push(a / b); break;
+			case '%':stack2.push(a % b); break;
 			}
 		}
 	}
-	cout<<stack2.top();
+	cout << stack2.top();
 	return 0;
 }
