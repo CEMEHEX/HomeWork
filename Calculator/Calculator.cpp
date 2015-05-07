@@ -17,7 +17,7 @@ int prio(char c) {
 }
 
 void error(string s) {
-	cout <<"Error:" + s;
+	cout << "Error:" + s;
 	exit(0);
 }
 
@@ -121,12 +121,13 @@ int main(int argc, char* argv[])
 			case '+':stack2.push(a + b); break;
 			case '-':stack2.push(a - b); break;
 			case '*':stack2.push(a * b); break;
-			case '/': if (b == 0) error("Division by zero"); 
+			case '/': if (b == 0) error("Division by zero");
 				stack2.push(a / b); break;
-			case '%':stack2.push(a % b); break;
+			case '%': if (b == 0) error("Division by zero"); stack2.push(a % b); break;
 			}
 		}
 	}
 	cout << stack2.top();
 	return 0;
 }
+
