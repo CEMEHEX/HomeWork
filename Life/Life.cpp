@@ -4,10 +4,13 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	//entering numbers
+	cout << "Enter size ";
 	int size;
 	cin >> size;
+	cout << "Enter the number of populated cells ";
 	int n;
 	cin >> n;
+	cout << "Enter the number of steps ";
 	int steps;
 	cin >> steps;
 
@@ -115,10 +118,10 @@ int main(int argc, char* argv[])
 			{
 				cout << "born/death:" << (double)born / (double)death << endl;
 			}
-        else 
-       {
-	       cout << "born/death:" << 0 << endl;
-       }
+			else
+			{
+				cout << "born/death:" << 0 << endl;
+			}
 			born = 0;
 			death = 0;
 			cout << "population:" << population << endl;
@@ -138,3 +141,4 @@ int main(int argc, char* argv[])
 	delete[] field;
 	return 0;
 }
+
