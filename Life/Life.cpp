@@ -7,9 +7,7 @@ int main(int argc, char* argv[])
 	cout << "Enter size ";
 	int size;
 	cin >> size;
-	cout << "Enter the number of populated cells ";
-	int n;
-	cin >> n;
+	int n = 0;
 	cout << "Enter the number of steps ";
 	int steps;
 	cin >> steps;
@@ -25,26 +23,41 @@ int main(int argc, char* argv[])
 			field[i][j] = 0;
 		}
 	}
-
-	srand(time(0));
-	int *source = new int[size*size];
-	for (int i = 0; i < size*size; ++i) {
-		source[i] = i;
+	cout << "Enter 0 if you want to fill the field by yourself, or any another number if you want to fill the field with random numbers ";
+	int isRand = 1;
+	cin >> isRand;
+	if (isRand == 0) {
+		cout << "Fill the field" << endl;
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < size; ++j) {
+				cin >> field[i + 2][j + 2];
+				if (field[i + 2][j + 2] == 1) n++;
+			}
+		}
 	}
+	else {
+		cout << "Enter the number of populated cells ";
+		cin >> n;
+		srand(time(0));
+		int *source = new int[size*size];
+		for (int i = 0; i < size*size; ++i) {
+			source[i] = i;
+		}
 
-	for (int i = 0; i < size*size; ++i) {
-		int j = rand() % (i + 1);
-		int t = source[i];
-		source[i] = source[j];
-		source[j] = t;
-	}
+		for (int i = 0; i < size*size; ++i) {
+			int j = rand() % (i + 1);
+			int t = source[i];
+			source[i] = source[j];
+			source[j] = t;
+		}
 
-	for (int i = 0; i < n; ++i) {
-		int x = source[i] % size;
-		int y = source[i] / size;
-		field[y + 2][x + 2] = 1;
+		for (int i = 0; i < n; ++i) {
+			int x = source[i] % size;
+			int y = source[i] / size;
+			field[y + 2][x + 2] = 1;
+		}
+		delete[] source;
 	}
-	delete[] source;
 
 	//simulation
 	int born = 0;
@@ -137,8 +150,53 @@ int main(int argc, char* argv[])
 		prev = population;
 	}
 	cout << "total population:" << population << endl;
-	if (number != -1) cout << "is not changed after " << number;
+	if (number != -1) cout << "is not changed after " << number << endl;
+	int startX = 2;
+	int startY = 2;
+	int endX = size + 2;
+	int endY = size + 2;
+	if (endX - startX + 1 > 10) endX = startX + 10;
+	if (endY - startY + 1 > 10) endY = startY + 10;
+	for (int i = startY; i < endY; ++i) {
+		for (int j = startX; j < endX; ++j) {
+			cout << field[i][j] << ' ';
+		}
+		cout << endl;
+	}
+	bool continueWhile = true;
+	cout << "Enter e if you want to exit, use wasd to move around the field ";
+	while (true) {
+		char command;
+		cin >> command;
+		endX = size + 1;
+		endY = size + 1;
+		switch (command) {
+		case 'e': continueWhile = false;  break;
+		case 'w': startY++;  break;
+		case 'a': startX++;  break;
+		case 's': startY--;  break;
+		case 'd': startX--;  break;
+		}
+		if (!continueWhile) break;
+		if (startX >= size + 2) startX = size + 1;
+		if (startX < 2) startX = 2;
+		if (startY >= size + 2) startY = size + 1;
+		if (startY < 2) startY = 2;
+		if (endX - startX + 1 > 10) endX = startX + 9;
+		if (endY - startY + 1 > 10) endY = startY + 9;
+		while ((endX - startX + 1 < 10) && (endX < size + 2)) endX++;
+		while ((endY - startY + 1 < 10) && (endY < size + 2)) endY++;
+		for (int k = 0; k < 25; ++k) cout << endl;
+		cout << "Enter e if you want to exit, use wasd to move around the field " << endl;
+		for (int i = startY; i <= endY; ++i) {
+			for (int j = startX; j <= endX; ++j) {
+				cout << field[i][j]<< ' ';
+			}
+			cout << endl;
+		}
+	}
 	delete[] field;
+	//system("pause");
 	return 0;
 }
 
