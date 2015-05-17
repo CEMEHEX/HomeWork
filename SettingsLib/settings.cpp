@@ -1,4 +1,9 @@
-#include "settings.h"
+
+#include <vcl.h>
+#pragma hdrstop
+#include "SettingsLib.h"
+#pragma argsused
+
 settings::settings(std::string const & filename) {
     this->filename = filename;
     this->reload();
@@ -49,6 +54,12 @@ void settings::reload() {
     delete[] filenameCh;
 }
 
+settings::param::param(const string & name, std::string value, const settings *parent) { 
+    this->name = name;
+    this->value = value;
+    this->parent = const_cast<settings* const>(parent);;
+ }
+
 //----------------------------------------------------------------------
 //cast
 
@@ -69,6 +80,7 @@ settings::param::operator double() const {
 // =
 settings::param & settings::param::operator=(std::string const & value) {
     this->value = value;
+    parent->set(this->name, this->value);
     return *this;
 }
 
@@ -76,6 +88,7 @@ settings::param & settings::param::operator=(int value) {
     stringstream temp;
     temp << value;
     this->value = temp.str();
+    parent->set(this->name, this->value);
     return *this;
 }
 
@@ -83,6 +96,7 @@ settings::param & settings::param::operator=(bool value) {
     stringstream temp;
     temp << boolalpha << value;
     this->value = temp.str();
+    parent->set(this->name, this->value);
     return *this;
 }
 
@@ -90,12 +104,113 @@ settings::param & settings::param::operator=(double value) {
     stringstream temp;
     temp << value;
     this->value = temp.str();
+    parent->set(this->name, this->value);
     return *this;
 }
 //------------------------------------------------------------------------
 //+=
+settings::param & settings::param::operator+=(std::string const & value) {
+    this->value += value;
+    parent->set(this->name, this->value);
+    return *this;
+}
 
+settings::param & settings::param::operator+=(int value) {
+    stringstream temp;
+    temp << (value + atoi(this->value.c_str()));
+    this->value += temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+
+settings::param & settings::param::operator+=(double value) {
+    stringstream temp;
+    temp << atof(this->value.c_str()) + value;
+    this->value += temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
 //------------------------------------------------------------------------
+//-=
+settings::param & settings::param::operator-=(int value) {
+    stringstream temp;
+    temp << (atoi(this->value.c_str()) - value);
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+
+settings::param & settings::param::operator-=(double value) {
+    stringstream temp;
+    temp << atof(this->value.c_str()) - value;;
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+//------------------------------------------------------------------------
+//*=
+settings::param & settings::param::operator*=(int value) {
+    stringstream temp;
+    temp << (atoi(this->value.c_str()) * value);
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+
+settings::param & settings::param::operator*=(double value) {
+    stringstream temp;
+    temp << atof(this->value.c_str()) * value;;
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+//------------------------------------------------------------------------
+// /=
+settings::param & settings::param::operator/=(int value) {
+    stringstream temp;
+    temp << (atoi(this->value.c_str()) / value);
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+
+settings::param & settings::param::operator/=(double value) {
+    stringstream temp;
+    temp << atof(this->value.c_str()) / value;;
+    this->value = temp.str();
+    parent->set(this->name, this->value);
+    return *this;
+}
+//------------------------------------------------------------------------
+// | and &
+settings::param & settings::param::operator|=(bool value) {
+    bool temp = false;
+    if (this->value != "true") temp =  true;
+    temp |= value;
+    string res = "false";
+    if (temp) res = "true";
+    this->value = temp;
+    parent->set(this->name, this->value);
+    return *this;
+}
+
+settings::param & settings::param::operator&=(bool value) {
+    bool temp = false;
+    if (this->value != "true") temp =  true;
+    temp &= value;
+    string res = "false";
+    if (temp) res = "true";
+    this->value = temp;
+    parent->set(this->name, this->value);
+    return *this;
+}
+//------------------------------------------------------------------------
+const settings::param settings::operator[](std::string const & name) const {
+    return param(name, this->pairs.find(name)->second, this);
+}
+settings::param settings::operator[](std::string const & name) {
+    return param(name, this->pairs[name], this);
+}
 int main(int argc, char* argv[])
 {
         return 0;
