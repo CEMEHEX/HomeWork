@@ -1,9 +1,4 @@
-
-#include <vcl.h>
-#pragma hdrstop
 #include "SettingsLib.h"
-#pragma argsused
-
 settings::settings(std::string const & filename) {
     this->filename = filename;
     this->reload();
