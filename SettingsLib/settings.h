@@ -15,7 +15,8 @@ class settings {
                     friend class settings;
 			private:
                                 string name, value;
-				param(param const &);
+			        param(const string &, const string , const settings *);
+                                settings *parent;
 			public:
 				operator std::string() const;
 				operator int() const;
