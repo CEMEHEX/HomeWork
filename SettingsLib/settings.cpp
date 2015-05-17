@@ -78,6 +78,10 @@ settings::param::operator double() const {
 }
 //-----------------------------------------------------------------------
 // =
+settings::param & settings::param::operator=(char const * value) { 
+     return this->operator=(std::string(value));
+}
+
 settings::param & settings::param::operator=(std::string const & value) {
     this->value = value;
     parent->set(this->name, this->value);
@@ -93,7 +97,7 @@ settings::param & settings::param::operator=(int value) {
 }
 
 settings::param & settings::param::operator=(bool value) {
-    stringstream temp;
+    ostringstream temp;
     temp << boolalpha << value;
     this->value = temp.str();
     parent->set(this->name, this->value);
@@ -101,7 +105,7 @@ settings::param & settings::param::operator=(bool value) {
 }
 
 settings::param & settings::param::operator=(double value) {
-    stringstream temp;
+    ostringstream temp;
     temp << value;
     this->value = temp.str();
     parent->set(this->name, this->value);
@@ -209,7 +213,7 @@ const settings::param settings::operator[](std::string const & name) const {
     return param(name, this->pairs.find(name)->second, this);
 }
 settings::param settings::operator[](std::string const & name) {
-    return param(name, this->pairs[name], this);
+    return param(name, this->pairs.find(name)->second, this);
 }
 int main(int argc, char* argv[])
 {
