@@ -1,4 +1,4 @@
-#include "SettingsLib.h"
+#include "settings.h"
 settings::settings(std::string const & filename) {
     this->filename = filename;
     this->reload();
